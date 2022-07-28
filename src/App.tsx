@@ -1,26 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useAccount } from "wagmi";
 
-function App() {
+import { Account, Connect, NetworkSwitcher, SignMessage } from "./components";
+
+export function App() {
+  const { address, isConnecting, isDisconnected } = useAccount();
+  if (typeof window !== "undefined") {
+    (window as any).global = window;
+    global.Buffer = global.Buffer || require("buffer").Buffer;
+    (window as any).process = {
+      version: "",
+    };
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Connect />
+
+      {address && (
+        <>
+          <Account />
+          <NetworkSwitcher />
+          <SignMessage />
+        </>
+      )}
+    </>
   );
 }
-
-export default App;
